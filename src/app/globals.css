@@ -3,31 +3,74 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --foreground: "#0a0a0a";
+  --background: "#fefefe";
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+img {
+  -ms-interpolation-mode: bicubic;
+  display: inline-block;
+  height: auto;
+  max-width: 100%;
+  vertical-align: middle
+}
+
+div.strike-title,
+div.strike-title-new {
+  font-size: 1.125rem;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  position: relative;
+  text-align: center
+}
+
+div.strike-title span,
+div.strike-title-new span {
+  background: #f7faff;
+  border-radius: .2em;
+  padding: .3125rem .9375rem;
+  position: relative;
+  z-index: 0
+}
+
+div.strike-title-new:before,
+div.strike-title:before {
+  background: #83a6c4;
+  content: "";
+  display: block;
+  height: 1px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  z-index: 0
+}
+
+div.strike-title-new {
+  margin-top: 1em
+}
+
+div.strike-title-new span {
+  background: #fefefe;
+  padding: .3125rem .9375rem;
+  position: relative;
+  z-index: 0
 }
