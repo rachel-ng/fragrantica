@@ -3,7 +3,6 @@
 import notes from '../data/notes.json';
 
 import React, { useState, useEffect } from "react";
-import Button from '@mui/material/Button';
 import Image from "next/image";
 
 import {
@@ -31,7 +30,8 @@ export default function Home() {
     "notes": notes_list, 
     "top": [], 
     "middle": [],
-    "base": []
+    "base": [],
+    "frag": []
   });
 
   const [pyramidType, setPyramidType] = useState("Perfume Pyramid");
@@ -188,7 +188,7 @@ export default function Home() {
               <h4 style={labelStyle}><b>Base Notes</b></h4>
               <Droppable id="base" items={items["base"]} key="base" style={layerStyle}/>
             </div>
-            : <Droppable id="top" items={items["top"]} key="top" style={layerStyle}/>
+            : <Droppable id="frag" items={items["frag"]} key="frag" style={layerStyle}/>
           }
         </div>
         <div style={spacerStyle}></div>

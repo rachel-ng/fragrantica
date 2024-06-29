@@ -17,7 +17,9 @@ npm run dev
 
 ### to do 
 
-- [ ] toggle for pyramid/notes
+- [x] toggle for pyramid/notes
+- [ ] toggle for categories
+  - [ ] center the text somehow
 - [ ] better note selection
   - [ ] search functionality
 

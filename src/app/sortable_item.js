@@ -42,15 +42,15 @@ const SortableItem = (props) => {
   return (
     <div style={itemStyle} ref={setNodeRef} {...attributes} {...listeners}>
       <div>
-        <img src={notes[props.id]["img"]}></img>
+        <img style={{ width: "3rem"}} src={notes[props.id]["img"]}></img>
       </div>
       <div style={{justifyContent: "center"}}>
       <a href={notes[props.id]["url"]} target="_blank">{props.id}</a>
-      {props.parent == "notes" ? 
+      {/* {props.parent == "notes" ? 
       <div style={{width: "min-content", fontSize: ".75rem", lineHeight: 1, marginBottom: "2rem"}}>
         {notes[props.id]["category"]}
       </div>
-      : ""}
+      : ""} */}
       </div>
     </div>
   );
