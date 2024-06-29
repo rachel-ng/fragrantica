@@ -5,7 +5,6 @@ import React from "react";
 
 const Droppable = ({ id, items, style }) => {
   const { setNodeRef } = useDroppable({ id });
-
   const droppableStyle = {
     display: "flex",
     flexFlow: "row wrap",
@@ -13,10 +12,11 @@ const Droppable = ({ id, items, style }) => {
     padding: "0.5rem",
     minHeight: "4rem",
   };
+  const combinedStyles = {...droppableStyle, ...style}
 
   return (
-    <SortableContext id={id} items={items} strategy={rectSortingStrategy} style={style}>
-      <div ref={setNodeRef} style={droppableStyle}>
+    <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
+      <div ref={setNodeRef} style={combinedStyles}>
         {items.map((item) => (
           <SortableItem key={item} id={item} parent={id}/>
         ))}
