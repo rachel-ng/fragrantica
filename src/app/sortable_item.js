@@ -47,7 +47,7 @@ const SortableItem = (props) => {
       <div style={{justifyContent: "center"}}>
       <a href={notes[props.id]["url"]} target="_blank">{props.id}</a>
       {props.parent == "notes" ? 
-      <div style={{width: "min-content", fontSize: ".75rem", lineHeight: 1, marginbase: "2rem"}}>
+      <div style={{width: "min-content", fontSize: ".75rem", lineHeight: 1, marginBottom: "2rem"}}>
         {notes[props.id]["category"]}
       </div>
       : ""}
