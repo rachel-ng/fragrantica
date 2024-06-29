@@ -147,6 +147,10 @@ export default function Home() {
   const notesStyle = {
     flexFlow: "row wrap", 
     padding: "2rem",
+    height: "50vh",
+    overflow: "scroll",
+    position: "relative",
+    padding: "2rem",
   }
   const pyramidStyle = {
     display: "flex",
@@ -192,7 +196,7 @@ export default function Home() {
           }
         </div>
         <div style={spacerStyle}></div>
-         <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle}/>
+        <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle}/>
       </DndContext>
     </div>
   );
