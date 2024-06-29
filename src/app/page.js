@@ -145,7 +145,7 @@ export default function Home() {
   };
 
   const notesStyle = {
-    flexFlow: "row wrap", 
+    flexFlow: "column wrap", 
     padding: "2rem",
     height: "50vh",
     overflow: "scroll",
