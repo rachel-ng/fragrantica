@@ -30,7 +30,7 @@ export default function Home() {
     "notes": notes_list, 
     "top": [], 
     "middle": [],
-    "bottom": []
+    "base": []
   });
 
   // useEffect(() => console.log({ items }), [items]);
@@ -174,8 +174,8 @@ export default function Home() {
           <Droppable id="top" items={items["top"]} key="top" style={layerStyle} click={handleOnClick}/>
           <h4 style={labelStyle}><b>Middle Notes</b></h4>
           <Droppable id="middle" items={items["middle"]} key="middle" style={layerStyle} click={handleOnClick}/>
-          <h4 style={labelStyle}><b>Bottom Notes</b></h4>
-          <Droppable id="bottom" items={items["bottom"]} key="bottom" style={layerStyle} click={handleOnClick}/>
+          <h4 style={labelStyle}><b>Base Notes</b></h4>
+          <Droppable id="base" items={items["base"]} key="base" style={layerStyle} click={handleOnClick}/>
         </div>
         <div style={spacerStyle}></div>
          <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle} click={handleOnClick}/>
