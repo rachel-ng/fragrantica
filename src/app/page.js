@@ -3,6 +3,7 @@
 import notes from '../data/notes.json';
 
 import React, { useState, useEffect } from "react";
+import Button from '@mui/material/Button';
 import Image from "next/image";
 
 import {
@@ -33,6 +34,8 @@ export default function Home() {
     "base": []
   });
 
+  const [pyramidType, setPyramidType] = useState("Perfume Pyramid");
+
   // useEffect(() => console.log({ items }), [items]);
 
   const sensors = useSensors(
@@ -42,8 +45,13 @@ export default function Home() {
     })
   );
   
-  const handleOnClick = ({ event }) => {
-    console.log(event)
+  const togglePyramid = ({param}) => {
+    if (pyramidType == "Perfume Pyramid") {
+      setPyramidType("Fragrance Notes")
+    }
+    else {
+      setPyramidType("Perfume Pyramid")
+    }
   }
 
   const handleDragOver = ({ over, active }) => {
@@ -169,16 +177,22 @@ export default function Home() {
         onDragOver={handleDragOver}
       >
         <div style={pyramidStyle}>
-          <div className="strike-title"><span>Perfume Pyramid</span></div>
-          <h4 style={labelStyle}><b>Top Notes</b></h4>
-          <Droppable id="top" items={items["top"]} key="top" style={layerStyle} click={handleOnClick}/>
-          <h4 style={labelStyle}><b>Middle Notes</b></h4>
-          <Droppable id="middle" items={items["middle"]} key="middle" style={layerStyle} click={handleOnClick}/>
-          <h4 style={labelStyle}><b>Base Notes</b></h4>
-          <Droppable id="base" items={items["base"]} key="base" style={layerStyle} click={handleOnClick}/>
+          <div className="strike-title" onClick={(e) => togglePyramid(e)}><span>{ pyramidType }</span></div>
+          {
+            pyramidType == "Perfume Pyramid" ? 
+            <div>
+              <h4 style={labelStyle}><b>Top Notes</b></h4>
+              <Droppable id="top" items={items["top"]} key="top" style={layerStyle}/>
+              <h4 style={labelStyle}><b>Middle Notes</b></h4>
+              <Droppable id="middle" items={items["middle"]} key="middle" style={layerStyle}/>
+              <h4 style={labelStyle}><b>Base Notes</b></h4>
+              <Droppable id="base" items={items["base"]} key="base" style={layerStyle}/>
+            </div>
+            : <Droppable id="top" items={items["top"]} key="top" style={layerStyle}/>
+          }
         </div>
         <div style={spacerStyle}></div>
-         <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle} click={handleOnClick}/>
+         <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle}/>
       </DndContext>
     </div>
   );

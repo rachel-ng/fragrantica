@@ -3,7 +3,7 @@ import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import SortableItem from "./sortable_item";
 import React from "react";
 
-const Droppable = ({ id, items, style, click }) => {
+const Droppable = ({ id, items, style }) => {
   const { setNodeRef } = useDroppable({ id });
 
   const droppableStyle = {
@@ -18,7 +18,7 @@ const Droppable = ({ id, items, style, click }) => {
     <SortableContext id={id} items={items} strategy={rectSortingStrategy} style={style}>
       <div ref={setNodeRef} style={droppableStyle}>
         {items.map((item) => (
-          <SortableItem key={item} id={item} parent={id} click={click}/>
+          <SortableItem key={item} id={item} parent={id}/>
         ))}
       </div>
     </SortableContext>
