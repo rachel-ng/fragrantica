@@ -1,5 +1,11 @@
 # fragrantica
 
+<sub>she's insane, your honor</sub>
+
+drag and drop fragrance pyramid maker
+
+&nbsp;
+
 ```bash
 npm run dev
 ```
@@ -13,7 +19,7 @@ npm run dev
 
 - [ ] toggle for pyramid/notes
 - [ ] better note selection
-  - [ ] 
+  - [ ] search functionality
 
 &nbsp;
 
