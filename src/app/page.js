@@ -6,37 +6,56 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 import {
+  closestCenter,
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors
 } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { 
+  arrayMove,
+  sortableKeyboardCoordinates 
+} from "@dnd-kit/sortable";
 
 import Droppable from "./droppable";
-import { arrayMove, insertAtIndex, removeAtIndex } from "./utils/array";
+import FragranceNotes from './fragrance_notes';
 
 const notes_list = Object.keys(notes).map((note) => {
   return notes[note]["name"]
 })
 
-const notes_type = Object.keys(notes).map((note) => {
-  return {"name": notes[note]["name"], "type": "notes"}
+const all_notes = {}
+Object.keys(notes).forEach((note) => {
+  all_notes[note] = {...notes[note], "hidden": false}
+})
+
+const notes_type = {}
+Object.keys(notes).forEach((note) => {
+  if (notes_type[notes[note]["category"]]) {
+    notes_type[notes[note]["category"]][note] = notes[note]
+  }
+  else {
+    notes_type[notes[note]["category"]] = {}
+    notes_type[notes[note]["category"]][note] = notes[note]
+  }
 })
 
 export default function Home() {
+
   const [items, setItems] = useState({
-    "notes": notes_list, 
+    "notes": [], 
     "top": [], 
     "middle": [],
     "base": [],
-    "frag": []
+    "frag": [], 
+    "all": all_notes,
   });
 
   const [pyramidType, setPyramidType] = useState("Perfume Pyramid");
 
-  // useEffect(() => console.log({ items }), [items]);
+  const [activeId, setActiveId] = useState(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -54,89 +73,112 @@ export default function Home() {
     }
   }
 
-  const handleDragOver = ({ over, active }) => {
-    const overId = over?.id;
+  const handleOnClick = (e, id) => {
+    if (!Object.keys(items).map((i) => {return Array.isArray(items[i]) ? items[i].includes(id) : false }).some((i) => { return i == true})) {
+      let nitems = {...items}
+      nitems["notes"].push(id)
+      nitems["all"][id]["hidden"] = true
+      setItems(nitems)
+      console.log(e.target)
+    }
+  }
 
-    if (!overId) {
+  function findContainer(id) {
+    if (id in items) {
+      return id;
+    }
+
+    return Object.keys(items).find((key) => items[key].includes(id));
+  }
+
+  function handleDragStart(event) {
+    const { active } = event;
+    const { id } = active;
+
+    setActiveId(id);
+  }
+
+  function handleDragOver(event) {
+    const { active, over, draggingRect } = event;
+    const { id } = active;
+    const { id: overId } = over;
+
+    // Find the containers
+    const activeContainer = findContainer(id);
+    const overContainer = findContainer(overId);
+
+    if (
+      !activeContainer ||
+      !overContainer ||
+      activeContainer === overContainer
+    ) {
       return;
     }
 
-    const activeContainer = active.data.current.sortable.containerId;
-    const overContainer = over.data.current?.sortable.containerId;
+    setItems((prev) => {
+      const activeItems = prev[activeContainer];
+      const overItems = prev[overContainer];
 
-    if (!overContainer) {
+      // Find the indexes for the items
+      const activeIndex = activeItems.indexOf(id);
+      const overIndex = overItems.indexOf(overId);
+
+      let newIndex;
+      if (overId in prev) {
+        // We're at the root droppable of a container
+        newIndex = overItems.length + 1;
+      } else {
+        const isBelowLastItem =
+          over &&
+          overIndex === overItems.length - 1;
+
+        const modifier = isBelowLastItem ? 1 : 0;
+
+        newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+      }
+
+      return {
+        ...prev,
+        [activeContainer]: [
+          ...prev[activeContainer].filter((item) => item !== active.id)
+        ],
+        [overContainer]: [
+          ...prev[overContainer].slice(0, newIndex),
+          items[activeContainer][activeIndex],
+          ...prev[overContainer].slice(newIndex, prev[overContainer].length)
+        ]
+      };
+    });
+  }
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+    const { id } = active;
+    const { id: overId } = over;
+
+    const activeContainer = findContainer(id);
+    const overContainer = findContainer(overId);
+
+    if (
+      !activeContainer ||
+      !overContainer ||
+      activeContainer !== overContainer
+    ) {
       return;
     }
 
-    if (activeContainer !== overContainer) {
-      setItems((items) => {
-        const activeIndex = active.data.current.sortable.index;
-        const overIndex = over.data.current?.sortable.index || 0;
+    const activeIndex = items[activeContainer].indexOf(active.id);
+    const overIndex = items[overContainer].indexOf(overId);
 
-        return moveBetweenContainers(
-          items,
-          activeContainer,
-          activeIndex,
-          overContainer,
-          overIndex,
-          active.id
-        );
-      });
-    }
-  };
-
-  const handleDragEnd = ({ active, over }) => {
-    if (!over) {
-      return;
+    if (activeIndex !== overIndex) {
+      setItems((items) => ({
+        ...items,
+        [overContainer]: arrayMove(items[overContainer], activeIndex, overIndex)
+      }));
     }
 
-    if (active.id !== over.id) {
-      const activeContainer = active.data.current.sortable.containerId;
-      const overContainer = over.data.current?.sortable.containerId || over.id;
-      const activeIndex = active.data.current.sortable.index;
-      const overIndex = over.data.current?.sortable.index || 0;
-
-      setItems((items) => {
-        let newItems;
-        if (activeContainer === overContainer) {
-          newItems = {
-            ...items,
-            [overContainer]: arrayMove(
-              items[overContainer],
-              activeIndex,
-              overIndex
-            )
-          };
-        } else {
-          newItems = moveBetweenContainers(
-            items,
-            activeContainer,
-            activeIndex,
-            overContainer,
-            overIndex,
-            active.id
-          );
-        }
-
-        return newItems;
-      });
-    }
-  };
-
-  const moveBetweenContainers = (
-    items,
-    activeContainer,
-    activeIndex,
-    overContainer,
-    overIndex,
-    item
-  ) => {
-    return {
-      ...items,
-      [activeContainer]: removeAtIndex(items[activeContainer], activeIndex),
-      [overContainer]: insertAtIndex(items[overContainer], overIndex, item)
-    };
-  };
+    setActiveId(null);
+  }
 
   const containerStyle = { 
     display: "flex",
@@ -145,18 +187,18 @@ export default function Home() {
   };
 
   const notesStyle = {
-    flexFlow: "column wrap", 
+    flexFlow: "row wrap", 
     padding: "2rem",
-    height: "50vh",
-    overflow: "scroll",
+    minHeight: "25vh",
+    width: "80vw",
+    height: "auto",
     position: "relative",
-    padding: "2rem",
+    padding: "1em",
+    margin: "0 auto",
+    background: "#fbfbfb",
+    borderRadius: ".2em",
   }
   const pyramidStyle = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    textAlign: "center", 
     background: "white",
     padding: "0.5rem",
   }
@@ -168,6 +210,7 @@ export default function Home() {
   }
 
   const spacerStyle = {
+    display: "block",
     height: "5rem"
   }
 
@@ -177,10 +220,12 @@ export default function Home() {
     >
       <DndContext
         sensors={sensors}
-        onDragEnd={handleDragEnd}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragOver={handleDragOver}
-      >
-        <div style={pyramidStyle}>
+        onDragEnd={handleDragEnd}
+        >
+        <div className="flex flex-col justify-center text-center" style={pyramidStyle}>
           <div className="strike-title" onClick={(e) => togglePyramid(e)}><span>{ pyramidType }</span></div>
           {
             pyramidType == "Perfume Pyramid" ? 
@@ -197,7 +242,26 @@ export default function Home() {
         </div>
         <div style={spacerStyle}></div>
         <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle}/>
+        <DragOverlay>
+          {activeId ? <FragranceNotes key={activeId} id={activeId} /> : null}
+        </DragOverlay>
+
       </DndContext>
+      <div className="flex flex-col" key="all" style={{ marginTop: "5em" }}>
+        {
+          Object.keys(notes_type).map((category) => {
+            return <div className="flex flex-col text-center" key={category} style={{ margin: "2em auto"}}>
+              <div><h4>{category}</h4></div>
+              <div className="flex flex-row flex-wrap text-center">
+                {Object.keys(notes_type[category]).map((note) => {
+                  return <FragranceNotes key={note} id={note} style={{ margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} parent="all" onClick={handleOnClick} />
+                  })
+                }
+              </div>
+            </div>
+          })
+        }
+      </div>
     </div>
   );
 }
