@@ -2,7 +2,8 @@
 
 import notes from '../data/notes.json';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import html2canvas from "html2canvas";
 import Image from "next/image";
 
 import {
@@ -14,9 +15,9 @@ import {
   useSensor,
   useSensors
 } from "@dnd-kit/core";
-import { 
+import {
   arrayMove,
-  sortableKeyboardCoordinates 
+  sortableKeyboardCoordinates
 } from "@dnd-kit/sortable";
 
 import Droppable from "./droppable";
@@ -28,7 +29,7 @@ const notes_list = Object.keys(notes).map((note) => {
 
 const all_notes = {}
 Object.keys(notes).forEach((note) => {
-  all_notes[note] = {...notes[note], "hidden": false}
+  all_notes[note] = { ...notes[note], "hidden": false }
 })
 
 const notes_type = {}
@@ -45,17 +46,18 @@ Object.keys(notes).forEach((note) => {
 export default function Home() {
 
   const [items, setItems] = useState({
-    "notes": [], 
-    "top": [], 
+    "notes": [],
+    "top": [],
     "middle": [],
     "base": [],
-    "frag": [], 
+    "frag": [],
     "all": all_notes,
   });
 
   const [pyramidType, setPyramidType] = useState("Perfume Pyramid");
-
   const [activeId, setActiveId] = useState(null);
+  
+  const screenshotRef = useRef(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -63,8 +65,8 @@ export default function Home() {
       coordinateGetter: sortableKeyboardCoordinates
     })
   );
-  
-  const togglePyramid = ({param}) => {
+
+  const togglePyramid = ({ param }) => {
     if (pyramidType == "Perfume Pyramid") {
       setPyramidType("Fragrance Notes")
     }
@@ -73,9 +75,34 @@ export default function Home() {
     }
   }
 
+  async function dataURLtoBlob(url) {
+    const blob = await (await fetch(url)).blob();
+    return blob
+  }
+
+  const handleScreenshot = (e) => {
+    let canvasPromise = html2canvas(screenshotRef.current, {
+      allowTaint: true,
+      useCORS: true // in case you have images stored in your application
+    });
+    canvasPromise.then((canvas)=> {
+      let dataURL = canvas.toDataURL("pyramid/png");
+      console.log(dataURL)
+      let blob = dataURLtoBlob(dataURL)
+      console.log(blob)
+      navigator.clipboard
+      .write([
+          new ClipboardItem({
+              'image/png': blob,
+          })
+      ]);
+
+    });
+  }
+
   const handleOnClick = (e, id) => {
-    if (!Object.keys(items).map((i) => {return Array.isArray(items[i]) ? items[i].includes(id) : false }).some((i) => { return i == true})) {
-      let nitems = {...items}
+    if (!Object.keys(items).map((i) => { return Array.isArray(items[i]) ? items[i].includes(id) : false }).some((i) => { return i == true })) {
+      let nitems = { ...items }
       nitems["notes"].push(id)
       nitems["all"][id]["hidden"] = true
       setItems(nitems)
@@ -180,14 +207,14 @@ export default function Home() {
     setActiveId(null);
   }
 
-  const containerStyle = { 
+  const containerStyle = {
     display: "flex",
     flexFlow: "column",
     justifyContent: "center",
   };
 
   const notesStyle = {
-    flexFlow: "row wrap", 
+    flexFlow: "row wrap",
     padding: "2rem",
     minHeight: "25vh",
     width: "80vw",
@@ -224,24 +251,28 @@ export default function Home() {
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
-        >
-        <div className="flex flex-col justify-center text-center" style={pyramidStyle}>
-          <div className="strike-title" onClick={(e) => togglePyramid(e)}><span>{ pyramidType }</span></div>
+      >
+        <div className="flex flex-col justify-center text-center" ref={screenshotRef} style={pyramidStyle}>
+          <div className="strike-title" onClick={(e) => togglePyramid(e)}><span>{pyramidType}</span></div>
           {
-            pyramidType == "Perfume Pyramid" ? 
-            <div>
-              <h4 style={labelStyle}><b>Top Notes</b></h4>
-              <Droppable id="top" items={items["top"]} key="top" style={layerStyle}/>
-              <h4 style={labelStyle}><b>Middle Notes</b></h4>
-              <Droppable id="middle" items={items["middle"]} key="middle" style={layerStyle}/>
-              <h4 style={labelStyle}><b>Base Notes</b></h4>
-              <Droppable id="base" items={items["base"]} key="base" style={layerStyle}/>
-            </div>
-            : <Droppable id="frag" items={items["frag"]} key="frag" style={layerStyle}/>
+            pyramidType == "Perfume Pyramid" ?
+              <div>
+                <h4 style={labelStyle}><b>Top Notes</b></h4>
+                <Droppable id="top" items={items["top"]} key="top" style={layerStyle} />
+                <h4 style={labelStyle}><b>Middle Notes</b></h4>
+                <Droppable id="middle" items={items["middle"]} key="middle" style={layerStyle} />
+                <h4 style={labelStyle}><b>Base Notes</b></h4>
+                <Droppable id="base" items={items["base"]} key="base" style={layerStyle} />
+              </div>
+              : <Droppable id="frag" items={items["frag"]} key="frag" style={layerStyle} />
           }
         </div>
+        <button type="button" onClick={handleScreenshot}>
+          screenshot
+        </button>
+
         <div style={spacerStyle}></div>
-        <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle}/>
+        <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle} />
         <DragOverlay>
           {activeId ? <FragranceNotes key={activeId} id={activeId} /> : null}
         </DragOverlay>
@@ -250,12 +281,12 @@ export default function Home() {
       <div className="flex flex-col" key="all" style={{ marginTop: "5em" }}>
         {
           Object.keys(notes_type).map((category) => {
-            return <div className="flex flex-col text-center" key={category} style={{ margin: "2em auto"}}>
+            return <div className="flex flex-col text-center" key={category} style={{ margin: "2em auto" }}>
               <div><h4>{category}</h4></div>
               <div className="flex flex-row flex-wrap text-center">
                 {Object.keys(notes_type[category]).map((note) => {
                   return <FragranceNotes key={note} id={note} style={{ margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} parent="all" onClick={handleOnClick} />
-                  })
+                })
                 }
               </div>
             </div>
