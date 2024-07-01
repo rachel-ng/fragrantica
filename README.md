@@ -20,11 +20,12 @@ npm run dev
 - [x] toggle for pyramid/notes
 - [ ] toggle for categories
   - [x] center the text
-- [ ] better note selection
+- [x] better note selection
   - [ ] search functionality
 
 &nbsp;
 
 ##### resources 
 
+[dnd-kit Multi](https://codesandbox.io/s/dnd-kit-multi-containers-lknfe)  
 [dnd-kit Sortable](https://codesandbox.io/s/dnd-kit-sortable-example-yhwz3f)

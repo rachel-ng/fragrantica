@@ -5,6 +5,7 @@ import notes from '../data/notes.json';
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import FragranceNotes from './fragrance_notes';
 
 const notes_list = Object.keys(notes).map((note) => {
   return notes[note]["name"]
@@ -40,18 +41,8 @@ const SortableItem = (props) => {
   };
 
   return (
-    <div style={itemStyle} ref={setNodeRef} {...attributes} {...listeners}>
-      <div>
-        <img style={{ width: "3rem"}} src={notes[props.id]["img"]}></img>
-      </div>
-      <div>
-      <a href={notes[props.id]["url"]} target="_blank">{props.id}</a>
-      {props.parent == "notes" ? 
-      <div className="category" style={{width: "min-content", fontSize: ".75rem", lineHeight: 1, marginBottom: "2rem"}}>
-        {notes[props.id]["category"]}
-      </div>
-      : ""}
-      </div>
+    <div style={{...itemStyle, ...props.style}} ref={setNodeRef} {...attributes} {...listeners}>
+      <FragranceNotes key={props.id} id={props.id} parent={props.parent}></FragranceNotes>
     </div>
   );
 };
