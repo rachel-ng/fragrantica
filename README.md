@@ -24,7 +24,7 @@ npm run dev
   - [ ] search functionality + fuzzy search
 - [ ] toggle for categories/foldable
   - [x] center the text
-- [ ] duplicable notes - right click? 
+- [x] duplicable notes - right click? 
 
 &nbsp;
 
