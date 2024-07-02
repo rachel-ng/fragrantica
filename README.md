@@ -18,10 +18,11 @@ npm run dev
 ### to do 
 
 - [x] toggle for pyramid/notes
-- [ ] toggle for categories
-  - [x] center the text
 - [x] better note selection
-  - [ ] search functionality
+  - [ ] search functionality + fuzzy search
+- [ ] toggle for categories/foldable
+  - [x] center the text
+- [ ] duplicable notes - right click? 
 
 &nbsp;
 
