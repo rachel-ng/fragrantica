@@ -282,7 +282,7 @@ export default function Home() {
         <div id="nav" className="flex flex-row" style={{ alignItems: "center" }}>
           {
             Object.keys(notes_type).map((category) => {
-              return <div className="lowercase text-center" style={{ margin: "1em" }}><a href={`#${slugify(category)}`}>{category}</a></div>
+              return <div className="lowercase text-center" style={{ margin: "1em" }} key={category}><a href={`#${slugify(category)}`}>{category}</a></div>
             })
           }
         </div>
@@ -290,6 +290,7 @@ export default function Home() {
           Object.keys(notes_type).map((category) => {
             return <div className="flex flex-col text-center" key={category} style={{ margin: "2em auto" }}>
               <div style={{ margin: "2em"}}><h4 id={slugify(category)}>{category}</h4></div>
+              
               <div className="flex flex-row flex-wrap text-center">
                 {Object.keys(notes_type[category]).map((note) => {
                   return <FragranceNotes key={note} id={note} style={{ width: "min-content", margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} parent="all" onClick={handleOnClick} />
