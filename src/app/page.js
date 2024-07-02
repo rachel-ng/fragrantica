@@ -12,6 +12,8 @@ import {
   closestCenter,
   DndContext,
   DragOverlay,
+  MouseSensor, 
+  TouchSensor,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -71,12 +73,21 @@ export default function Home() {
   const [pyramidType, setPyramidType] = useState("Perfume Pyramid");
   const [activeId, setActiveId] = useState(null);
 
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 0.01
+    }
+  })
+  const mouseSensor = useSensor(MouseSensor)
+  const touchSensor = useSensor(TouchSensor)
+  const keyboardSensor = useSensor(KeyboardSensor)
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
-  );
+    mouseSensor,
+    touchSensor,
+    keyboardSensor,
+    pointerSensor
+  )
 
   const togglePyramid = ({ param }) => {
     if (pyramidType == "Perfume Pyramid") {
@@ -102,6 +113,20 @@ export default function Home() {
     }
   }
 
+  const handleRightClick = (e, id) => {
+    console.log(id)
+    if (e.nativeEvent.button === 2) {
+      console.log('Right click')
+      let container = findContainer(id) 
+      let index = items[container].indexOf(id)
+      console.log(container)
+      console.log(items[container], index)
+
+      let nitems = { ...items }
+      nitems[container] = [...nitems[container].slice(0, index), " " + id, ...nitems[container].slice(index)]
+      setItems(nitems)
+    }  
+  }
   
   const handleOnClick = (e, id) => {
     if (!Object.keys(items).map((i) => { return Array.isArray(items[i]) ? items[i].includes(id) : false }).some((i) => { return i == true })) {
@@ -109,7 +134,6 @@ export default function Home() {
       nitems["notes"].push(id)
       nitems["all"][id]["hidden"] = true
       setItems(nitems)
-      console.log(e.target)
     }
   }
 
@@ -261,18 +285,18 @@ export default function Home() {
             pyramidType == "Perfume Pyramid" ?
               <div>
                 <h4 className={lato.className} style={labelStyle}><b>Top Notes</b></h4>
-                <Droppable id="top" items={items["top"]} key="top" style={layerStyle} />
+                <Droppable id="top" items={items["top"]} key="top" click={handleRightClick} context={handleRightClick} style={layerStyle} />
                 <h4 className={lato.className} style={labelStyle}><b>Middle Notes</b></h4>
-                <Droppable id="middle" items={items["middle"]} key="middle" style={layerStyle} />
+                <Droppable id="middle" items={items["middle"]} key="middle" click={handleRightClick} context={handleRightClick} style={layerStyle} />
                 <h4 className={lato.className} style={labelStyle}><b>Base Notes</b></h4>
-                <Droppable id="base" items={items["base"]} key="base" style={layerStyle} />
+                <Droppable id="base" items={items["base"]} key="base" click={handleRightClick} context={handleRightClick} style={layerStyle} />
               </div>
-              : <Droppable id="frag" items={items["frag"]} key="frag" style={layerStyle} />
+              : <Droppable id="frag" items={items["frag"]} key="frag" click={handleRightClick} context={handleRightClick} style={layerStyle} />
           }
         </div>
 
         <div style={spacerStyle}></div>
-        <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle} />
+        <Droppable id="notes" items={items["notes"]} key="notes" click={handleRightClick} context={handleRightClick} style={notesStyle} />
         <DragOverlay>
           {activeId ? <FragranceNotes key={activeId} id={activeId} /> : null}
         </DragOverlay>
@@ -290,10 +314,13 @@ export default function Home() {
           Object.keys(notes_type).map((category) => {
             return <div className="flex flex-col text-center" key={category} style={{ margin: "2em auto" }}>
               <div style={{ margin: "2em"}}><h4 id={slugify(category)}>{category}</h4></div>
-              
+
               <div className="flex flex-row flex-wrap text-center">
                 {Object.keys(notes_type[category]).map((note) => {
-                  return <FragranceNotes key={note} id={note} style={{ width: "min-content", margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} parent="all" onClick={handleOnClick} />
+                  return <FragranceNotes key={note} id={note} 
+                    parent="all" 
+                    style={{ width: "min-content", margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} 
+                    click={handleOnClick} />
                 })
                 }
               </div>

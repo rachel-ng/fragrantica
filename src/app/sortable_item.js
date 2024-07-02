@@ -41,7 +41,10 @@ const SortableItem = (props) => {
 
   return (
     <div style={{...itemStyle, ...props.style}} ref={setNodeRef} {...attributes} {...listeners}>
-      <FragranceNotes key={props.id} id={props.id} parent={props.parent}></FragranceNotes>
+      <FragranceNotes key={props.id} id={props.id} parent={props.parent} 
+        click={props.click} 
+        context={props.context}>
+      </FragranceNotes>
     </div>
   );
 };
