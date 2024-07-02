@@ -282,7 +282,7 @@ export default function Home() {
         <div id="nav" className="flex flex-row" style={{ alignItems: "center" }}>
           {
             Object.keys(notes_type).map((category) => {
-              return <div className="font-mono lowercase text-center" style={{ margin: "1em" }}><a href={`#${slugify(category)}`}>{category}</a></div>
+              return <div className="lowercase text-center" style={{ margin: "1em" }}><a href={`#${slugify(category)}`}>{category}</a></div>
             })
           }
         </div>
