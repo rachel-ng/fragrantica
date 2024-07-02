@@ -54,7 +54,6 @@ const slugify = (...args) => {
       .normalize('NFD') // split an accented letter in the base letter and the acent
       .replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
       .toLowerCase()
-      .trim()
       .replace(/[^a-z0-9 ]/g, '') // remove all chars not letters, numbers and spaces (to be replaced)
       .replace(/\s+/g, '-') // separator
 }
@@ -116,14 +115,20 @@ export default function Home() {
   const handleRightClick = (e, id) => {
     console.log(id)
     if (e.nativeEvent.button === 2) {
-      console.log('Right click')
       let container = findContainer(id) 
       let index = items[container].indexOf(id)
       console.log(container)
       console.log(items[container], index)
 
       let nitems = { ...items }
-      nitems[container] = [...nitems[container].slice(0, index), " " + id, ...nitems[container].slice(index)]
+
+      let arr = findContainerVariations(id)
+      console.log("variations", arr)
+      let nid = " " + arr.reduce((max,name)=>{
+        return name.length > max.length? name: max
+      },arr[0])
+
+      nitems[container] = [...nitems[container].slice(0, index), nid, ...nitems[container].slice(index)]
       setItems(nitems)
     }  
   }
@@ -138,12 +143,25 @@ export default function Home() {
   }
 
   function findContainer(id) {
+    console.log(`"${id}"`)
     if (id in items) {
       return id;
     }
-
-    return Object.keys(items).find((key) => items[key].includes(id));
+    return Object.keys(items).find((key) => {
+      return Array.isArray(items[key]) ? items[key].includes(id) : false
+    });
   }
+
+  function findContainerVariations(id) {
+    console.log(`"${id}"`)
+    if (id in items) {
+      return id;
+    }
+    return Object.keys(items).map((key) => {
+      return Array.isArray(items[key]) ? items[key].filter(s => s.includes(id.trimLeft())) : []
+    }).flat();
+  }
+
 
   function handleDragStart(event) {
     const { active } = event;
