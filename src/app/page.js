@@ -60,8 +60,6 @@ export default function Home() {
   const [pyramidType, setPyramidType] = useState("Perfume Pyramid");
   const [activeId, setActiveId] = useState(null);
 
-  const screenshotRef = useRef(null)
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -93,34 +91,7 @@ export default function Home() {
     }
   }
 
-  async function dataURLtoBlob(url) {
-    const blob = await (await fetch(url)).blob();
-    return blob
-  }
-
-  const handleScreenshot = (e) => {
-    toPng(screenshotRef.current, {
-      cacheBust: false,
-      fetchRequestInit: {
-        cache: 'no-cache',
-      },
-    })
-      .then((dataUrl) => {
-        let blob = dataURLtoBlob(dataURL)
-        console.log(blob)
-        navigator.clipboard
-          .write([
-            new ClipboardItem({
-              'image/png': blob,
-            })
-          ]);
-
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
+  
   const handleOnClick = (e, id) => {
     if (!Object.keys(items).map((i) => { return Array.isArray(items[i]) ? items[i].includes(id) : false }).some((i) => { return i == true })) {
       let nitems = { ...items }
@@ -273,7 +244,7 @@ export default function Home() {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-col justify-center text-center" id="pyramid" ref={screenshotRef} style={pyramidStyle}>
+        <div className="flex flex-col justify-center text-center" id="pyramid" style={pyramidStyle}>
           <div className="strike-title" onClick={(e) => togglePyramid(e)}><span>{pyramidType}</span></div>
           {
             pyramidType == "Perfume Pyramid" ?
@@ -288,9 +259,6 @@ export default function Home() {
               : <Droppable id="frag" items={items["frag"]} key="frag" style={layerStyle} />
           }
         </div>
-        <button type="button" onClick={handleScreenshot}>
-          screenshot
-        </button>
 
         <div style={spacerStyle}></div>
         <Droppable id="notes" items={items["notes"]} key="notes" style={notesStyle} />
@@ -306,7 +274,7 @@ export default function Home() {
               <div><h4>{category}</h4></div>
               <div className="flex flex-row flex-wrap text-center">
                 {Object.keys(notes_type[category]).map((note) => {
-                  return <FragranceNotes key={note} id={note} style={{ margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} parent="all" onClick={handleOnClick} />
+                  return <FragranceNotes key={note} id={note} style={{ width: "min-content", margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} parent="all" onClick={handleOnClick} />
                 })
                 }
               </div>
