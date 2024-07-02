@@ -251,8 +251,8 @@
         "url": "https://www.fragrantica.com/notes/Shiikuwasha-1302.html",
         "img": "https://fimgs.net/mdimg/sastojci/m.1302.jpg"
     },
-    "Sudachi Citrus": {
-        "name": "Sudachi Citrus",
+    "Sudachi citrus": {
+        "name": "Sudachi citrus",
         "category": "Citrus",
         "url": "https://www.fragrantica.com/notes/Sudachi-citrus-1576.html",
         "img": "https://fimgs.net/mdimg/sastojci/m.1576.jpg"
@@ -1571,8 +1571,8 @@
         "url": "https://www.fragrantica.com/notes/Bergamot-Blossom-680.html",
         "img": "https://fimgs.net/mdimg/sastojci/m.680.jpg"
     },
-    "Bird Cherry": {
-        "name": "Bird Cherry",
+    "Bird cherry": {
+        "name": "Bird cherry",
         "category": "Flowers",
         "url": "https://www.fragrantica.com/notes/Bird-cherry-1463.html",
         "img": "https://fimgs.net/mdimg/sastojci/m.1463.jpg"
@@ -7685,12 +7685,6 @@
         "url": "https://www.fragrantica.com/notes/Wine-must-1566.html",
         "img": "https://fimgs.net/mdimg/sastojci/m.1566.jpg"
     },
-    "Pepperwood\u2122": {
-        "name": "Pepperwood\u2122",
-        "category": "Natural And Synthetic, Popular And Weird",
-        "url": "https://www.fragrantica.com/notes/Pepperwood-1507.html",
-        "img": "https://fimgs.net/mdimg/sastojci/m.1507.jpg"
-    },
     "Accord Eudora\u00ae": {
         "name": "Accord Eudora\u00ae",
         "category": "Natural And Synthetic, Popular And Weird",
@@ -8602,6 +8596,12 @@
         "category": "Natural And Synthetic, Popular And Weird",
         "url": "https://www.fragrantica.com/notes/Pencil-1228.html",
         "img": "https://fimgs.net/mdimg/sastojci/m.1228.jpg"
+    },
+    "Pepperwood\u2122": {
+        "name": "Pepperwood\u2122",
+        "category": "Natural And Synthetic, Popular And Weird",
+        "url": "https://www.fragrantica.com/notes/Pepperwood-1507.html",
+        "img": "https://fimgs.net/mdimg/sastojci/m.1507.jpg"
     },
     "Petroleum": {
         "name": "Petroleum",
