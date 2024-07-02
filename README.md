@@ -4,6 +4,8 @@
 
 drag and drop fragrance pyramid maker
 
+https://www.fragrantica.com/notes/
+
 &nbsp;
 
 ```bash
