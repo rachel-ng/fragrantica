@@ -8,17 +8,15 @@ import { CSS } from "@dnd-kit/utilities";
 
 const FragranceNotes = (props) => {
   const itemStyle = {
-    justifyContent: "center",
-    flexDirection: "column",
     width: "max-content",
-    textAlign: "center",
     opacity: 0.96025,
+    position: "relative",
   };
   
   return (
-    <div style={{...itemStyle, ...props.style}} onClick={(e) => props.onClick(e, props.id)}>
+    <div className="flex flex-col justify-start text-center" style={{...itemStyle, ...props.style}} onClick={(e) => props.onClick(e, props.id)}>
       <div>
-        <img style={{ width: "3rem"}} src={notes[props.id]["img"]}></img>
+        <img style={{ width: "3em", minWidth: "3em", height: "auto" }} src={notes[props.id]["img"]}></img>
       </div>
       <div>
       <a href={notes[props.id]["url"]} target="_blank">{props.id}</a>

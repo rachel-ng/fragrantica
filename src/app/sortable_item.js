@@ -33,7 +33,6 @@ const SortableItem = (props) => {
     flexDirection: "column",
     width: "max-content",
     textAlign: "center",
-    opacity: 0.96025,
     position: "relative",
     userSelect: "none",
     cursor: "grab",
