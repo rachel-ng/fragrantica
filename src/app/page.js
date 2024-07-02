@@ -4,8 +4,6 @@ import notes from '../data/notes.json';
 
 import { Lato } from "next/font/google";
 import React, { useState, useEffect, useRef } from "react";
-import { toPng } from 'html-to-image';
-import Image from "next/image";
 
 const lato = Lato({ weight: ["400"], subsets: ["latin"] });
 
@@ -45,6 +43,18 @@ Object.keys(notes).forEach((note) => {
     notes_type[notes[note]["category"]][note] = notes[note]
   }
 })
+
+const slugify = (...args) => {
+  const value = args.join(' ')
+
+  return value
+      .normalize('NFD') // split an accented letter in the base letter and the acent
+      .replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 ]/g, '') // remove all chars not letters, numbers and spaces (to be replaced)
+      .replace(/\s+/g, '-') // separator
+}
 
 export default function Home() {
 
@@ -268,10 +278,17 @@ export default function Home() {
 
       </DndContext>
       <div className="flex flex-col" key="all" style={{ marginTop: "5em" }}>
+        <div id="nav" className="flex flex-row" style={{ alignItems: "center" }}>
+          {
+            Object.keys(notes_type).map((category) => {
+              return <div className="font-mono lowercase text-center" style={{ margin: "1em" }}><a href={`#${slugify(category)}`}>{category}</a></div>
+            })
+          }
+        </div>
         {
           Object.keys(notes_type).map((category) => {
             return <div className="flex flex-col text-center" key={category} style={{ margin: "2em auto" }}>
-              <div><h4>{category}</h4></div>
+              <div style={{ margin: "2em"}}><h4 id={slugify(category)}>{category}</h4></div>
               <div className="flex flex-row flex-wrap text-center">
                 {Object.keys(notes_type[category]).map((note) => {
                   return <FragranceNotes key={note} id={note} style={{ width: "min-content", margin: "1em", display: items["all"][note]["hidden"] ? "none" : "flex" }} parent="all" onClick={handleOnClick} />
