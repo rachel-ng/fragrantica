@@ -4,6 +4,7 @@ import notes from '../data/notes.json';
 
 import { Lato } from "next/font/google";
 import React, { useState, useEffect, useRef } from "react";
+import ScrollButton from './scroll_button';
 
 const lato = Lato({ weight: ["400"], subsets: ["latin"] });
 
@@ -299,6 +300,7 @@ export default function Home() {
           })
         }
       </div>
+      <ScrollButton /> 
     </div>
   );
 }
