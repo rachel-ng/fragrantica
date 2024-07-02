@@ -2,9 +2,12 @@
 
 import notes from '../data/notes.json';
 
+import { Lato } from "next/font/google";
 import React, { useState, useEffect, useRef } from "react";
-import html2canvas from "html2canvas";
+import { toPng } from 'html-to-image';
 import Image from "next/image";
+
+const lato = Lato({ weight: ["400"], subsets: ["latin"] });
 
 import {
   closestCenter,
@@ -56,7 +59,7 @@ export default function Home() {
 
   const [pyramidType, setPyramidType] = useState("Perfume Pyramid");
   const [activeId, setActiveId] = useState(null);
-  
+
   const screenshotRef = useRef(null)
 
   const sensors = useSensors(
@@ -69,9 +72,24 @@ export default function Home() {
   const togglePyramid = ({ param }) => {
     if (pyramidType == "Perfume Pyramid") {
       setPyramidType("Fragrance Notes")
+      let nitems = { ...items }
+      let tiers = ["top", "middle", "base"]
+      tiers.forEach((tier) => {
+        nitems[tier].forEach((note) => { 
+          nitems["frag"].push(note)
+        })
+        nitems[tier] = []
+      })
+      setItems(nitems)
     }
     else {
       setPyramidType("Perfume Pyramid")
+      let nitems = { ...items }
+      nitems["frag"].forEach((note) => {
+        nitems["base"].push(note)
+      })
+      nitems["frag"] = [] 
+      setItems(nitems)
     }
   }
 
@@ -81,23 +99,26 @@ export default function Home() {
   }
 
   const handleScreenshot = (e) => {
-    let canvasPromise = html2canvas(screenshotRef.current, {
-      allowTaint: true,
-      useCORS: true // in case you have images stored in your application
-    });
-    canvasPromise.then((canvas)=> {
-      let dataURL = canvas.toDataURL("pyramid/png");
-      console.log(dataURL)
-      let blob = dataURLtoBlob(dataURL)
-      console.log(blob)
-      navigator.clipboard
-      .write([
-          new ClipboardItem({
+    toPng(screenshotRef.current, {
+      cacheBust: false,
+      fetchRequestInit: {
+        cache: 'no-cache',
+      },
+    })
+      .then((dataUrl) => {
+        let blob = dataURLtoBlob(dataURL)
+        console.log(blob)
+        navigator.clipboard
+          .write([
+            new ClipboardItem({
               'image/png': blob,
-          })
-      ]);
+            })
+          ]);
 
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   const handleOnClick = (e, id) => {
@@ -252,16 +273,16 @@ export default function Home() {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-col justify-center text-center" ref={screenshotRef} style={pyramidStyle}>
+        <div className="flex flex-col justify-center text-center" id="pyramid" ref={screenshotRef} style={pyramidStyle}>
           <div className="strike-title" onClick={(e) => togglePyramid(e)}><span>{pyramidType}</span></div>
           {
             pyramidType == "Perfume Pyramid" ?
               <div>
-                <h4 style={labelStyle}><b>Top Notes</b></h4>
+                <h4 className={lato.className} style={labelStyle}><b>Top Notes</b></h4>
                 <Droppable id="top" items={items["top"]} key="top" style={layerStyle} />
-                <h4 style={labelStyle}><b>Middle Notes</b></h4>
+                <h4 className={lato.className} style={labelStyle}><b>Middle Notes</b></h4>
                 <Droppable id="middle" items={items["middle"]} key="middle" style={layerStyle} />
-                <h4 style={labelStyle}><b>Base Notes</b></h4>
+                <h4 className={lato.className} style={labelStyle}><b>Base Notes</b></h4>
                 <Droppable id="base" items={items["base"]} key="base" style={layerStyle} />
               </div>
               : <Droppable id="frag" items={items["frag"]} key="frag" style={layerStyle} />
