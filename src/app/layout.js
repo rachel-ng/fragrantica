@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Fraudgrantica",
-  description: "Fragrantica pyramid/notes maker",
+  title: "Fragrantica",
+  description: "Fragrantica pyramid maker",
 };
 
 export default function RootLayout({ children }) {

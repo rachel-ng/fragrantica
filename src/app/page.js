@@ -209,7 +209,7 @@ export default function Home() {
     flexFlow: "row wrap",
     padding: "2rem",
     minHeight: "25vh",
-    width: "80vw",
+    width: "90vw",
     height: "auto",
     position: "relative",
     padding: "1em",
