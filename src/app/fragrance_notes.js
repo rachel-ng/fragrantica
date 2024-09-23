@@ -20,7 +20,7 @@ const FragranceNotes = (props) => {
       onClick={(e) => {props.click ? props.click(e, id) : null }} 
       onContextMenu={(e) => {props.context ? props.context(e, id) : null }}>
       <div>
-        <img style={{ width: "3em", minWidth: "3em", height: "auto" }} src={notes[id]["img"]}></img>
+        <img style={{ width: `${props.size}em`, height: `${props.size}em`, minWidth: `${props.size}em`, margin: "0 auto", zIndex: 50 }} src={notes[id]["img"]}></img>
       </div>
       <div>
       <a href={notes[id]["url"]} target="_blank">{id}</a>

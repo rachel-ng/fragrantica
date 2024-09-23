@@ -29,7 +29,7 @@ const SortableItem = (props) => {
     transition,
     margin: "0.2rem",
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     flexDirection: "column",
     width: "max-content",
     textAlign: "center",
@@ -41,7 +41,7 @@ const SortableItem = (props) => {
 
   return (
     <div style={{...itemStyle, ...props.style}} ref={setNodeRef} {...attributes} {...listeners}>
-      <FragranceNotes key={props.id} id={props.id} parent={props.parent} 
+      <FragranceNotes key={props.id} id={props.id} parent={props.parent} size={props.size} 
         click={props.click} 
         context={props.context}>
       </FragranceNotes>
