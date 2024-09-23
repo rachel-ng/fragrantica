@@ -25,6 +25,7 @@ npm run dev
 - [ ] toggle for categories/foldable
   - [x] center the text
 - [x] duplicable notes - right click? 
+- [x] change size of images
 
 &nbsp;
 
