@@ -91,3 +91,20 @@ div.strike-title-new span {
   position: relative;
   z-index: 0
 }
+
+.note-picture {
+  position: relative;
+}
+
+.note-picture:hover .hover-size {
+  display: block;
+}
+
+.hover-size  {
+  position: absolute;
+  display: none;
+  background: #000000;
+  opacity: 0.5;
+  margin: 0 auto;
+}
+
